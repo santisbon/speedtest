@@ -1,2 +1,8 @@
 nodeHostname: raspberrypi4
 replicas: 1
+initMode: setup
+user: my-user
+password: my-password
+org: my-org
+bucket: my-bucket
+retention: 1w

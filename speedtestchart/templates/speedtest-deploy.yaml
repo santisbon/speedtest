@@ -1,0 +1,52 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: {{ .Release.Name }}-speedtest-deploy
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: speedtest
+  template:
+    metadata:
+      labels:
+        app: speedtest
+    spec:
+      containers:
+      - name: speedtest-c
+        image: santisbon/speedtest:latest
+        imagePullPolicy: Always
+        env:
+        - name: TZ
+          value: "America/Chicago"
+      - name: influxdb-c
+        image: influxdb
+        imagePullPolicy: Always
+        env:
+        - name: TZ
+          value: "America/Chicago"
+        - name: DOCKER_INFLUXDB_INIT_MODE
+          value: {{ .Values.initMode | quote }}
+        - name: DOCKER_INFLUXDB_INIT_USERNAME
+          value: {{ .Values.user | quote }}
+        - name: DOCKER_INFLUXDB_INIT_PASSWORD
+          value: {{ .Values.password | quote }}
+        - name: DOCKER_INFLUXDB_INIT_ORG
+          value: {{ .Values.org | quote }}
+        - name: DOCKER_INFLUXDB_INIT_BUCKET
+          value: {{ .Values.bucket | quote }}
+        - name: DOCKER_INFLUXDB_INIT_RETENTION
+          value: {{ .Values.retention | quote }}
+        volumeMounts:
+        - name: var-lib-influxdb2-vol
+          mountPath: "/var/lib/influxdb2"
+        - name: etc-influxdb2-vol
+          mountPath: "/etc/influxdb2"
+      volumes:
+      - name: var-lib-influxdb2-vol
+        persistentVolumeClaim:
+          claimName: {{ .Release.Name }}-var-lib-influxdb2-pvc
+      - name: etc-influxdb2-vol
+        persistentVolumeClaim:
+          claimName: {{ .Release.Name }}--etc-influxdb2-pvc
+      
