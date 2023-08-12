@@ -2,8 +2,8 @@ nodeHostname: raspberrypi4
 replicas: 1
 initMode: setup
 influxdbport: 8086
-influxdbuser: my-user
-influxdbpassword: my-password
+influxdbuser: influxuser
+influxdbpassword: supersecret
 org: my-org
 bucket: internetspeed
 retention: 1w

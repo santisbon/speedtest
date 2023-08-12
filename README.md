@@ -41,7 +41,7 @@ Note: MicroK8s by default uses `Dqlite` as its storage backend instead of `etcd`
     nano $CHART/values.yaml
     # edit the values
     ```
-3. Install the Helm chart which will [enforce the installation order](https://helm.sh/docs/intro/using_helm). Replace parameters if you didn't do it through the `values.yaml` file. If using MicroK8s add it to the typed commands e.g. `microk8s helm`, `microk8s kubectl`.
+3. Install the Helm chart which will [enforce the installation order](https://helm.sh/docs/intro/using_helm). Set parameters if you didn't do it through the `values.yaml` file. If using MicroK8s add it to the typed commands e.g. `microk8s helm`, `microk8s kubectl`.
     ```shell
     # On your Pi
     RELEASE=speedtest
@@ -50,12 +50,22 @@ Note: MicroK8s by default uses `Dqlite` as its storage backend instead of `etcd`
     helm install $RELEASE $CHART \
         -n $NAMESPACE \
         --create-namespace \
-        --set webPassword=supersecret \
-        --set externalIP=192.168.XXX.XXX \
-        --set webPort=8000
+        --set nodeHostname=raspberrypi4 \
+        --set influxdbpassword=supersecret
     ```
 4. Grab the `NodePort` assigned to the Grafana service (by default in the 30000-32767 range)
     ```shell
-    kubectl -n mynamespace get svc    
+    kubectl -n $NAMESPACE get svc $RELEASE-grafana-svc
     ```
 5. From your desktop, access the Grafana dashboard using your Raspberry Pi's IP address and the `NodePort` from the previous step e.g. http://192.168.XXX.XXX:30001.
+
+## Upgrade
+```shell
+helm upgrade $RELEASE $CHART -n $NAMESPACE
+```
+
+## Uninstall
+```shell
+helm uninstall $RELEASE -n $NAMESPACE --wait
+kubectl delete namespaces $NAMESPACE
+```
