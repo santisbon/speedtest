@@ -32,12 +32,12 @@ Note: MicroK8s by default uses `Dqlite` as its storage backend instead of `etcd`
     CHART="santisbon/speedtest"
     ```
 
-    Or if installing from source, grab the code
+    Or if installing from source
     ```shell
     # On your Pi
-    CHART="./speedtestchart"
-
     git clone https://github.com/santisbon/speedtest.git && cd speedtest
+    CHART="./speedtestchart"
+    
     nano $CHART/values.yaml
     # edit the values
     ```

@@ -19,7 +19,7 @@ spec:
             - name: TIME_SERIES_HOST
               value: {{ .Release.Name }}-influxdb-svc
             - name: TIME_SERIES_PORT
-              value: {{ .Values.influxdbport }}
+              value: {{ .Values.influxdbport | quote }}
             - name: TIME_SERIES_USERNAME
               valueFrom:
                 secretKeyRef:
