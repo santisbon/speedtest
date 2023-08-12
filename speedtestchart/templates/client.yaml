@@ -1,27 +1,35 @@
-kind: Deployment
-apiVersion: apps/v1
+kind: CronJob
+apiVersion: batch/v1
 metadata:
-  name: {{ .Release.Name }}-client-deploy
+  name: client-job
 spec:
-  replicas: {{ .Values.replicas }}
-  selector:
-    matchLabels:
-      app: speedtest
-      tier: client
-  strategy:
-    type: Recreate
-  template:
-    metadata:
-      labels:
-        app: speedtest
-        tier: client
+  schedule: "*/5 * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
     spec:
-      containers:
-      - name: client-c
-        image: santisbon/speedtest:latest
-        imagePullPolicy: Always
-        env:
-        - name: TZ
-          value: "America/Chicago"
-
-# TODO: Set env variables from Secrets for influxdb credentials
+      template:
+        spec:
+          containers:
+          - name: client-c
+            image: santisbon/speedtest:latest
+            imagePullPolicy: Always
+            env:
+            - name: TZ
+              value: "America/Chicago"
+            - name: TIME_SERIES_HOST
+              value: {{ .Release.Name }}-influxdb-svc
+            - name: TIME_SERIES_PORT
+              value: {{ .Values.influxdbport }}
+            - name: TIME_SERIES_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-secure-config
+                  key: influxdb.username
+            - name: TIME_SERIES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-secure-config
+                  key: influxdb.password
+            - name: TIME_SERIES_DATABASE
+              value: {{ .Values.bucket }}
+          restartPolicy: OnFailure

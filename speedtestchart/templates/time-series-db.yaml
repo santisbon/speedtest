@@ -8,7 +8,7 @@ spec:
     app: speedtest
     tier: db
   ports:
-  - port: 8086
+  - port: {{ .Values.influxdbport }}
   
 ---
 
@@ -72,7 +72,7 @@ spec:
         - name: TZ
           value: "America/Chicago"
         - name: DOCKER_INFLUXDB_INIT_MODE
-          value: {{ .Values.initMode | quote }}
+          value: {{ .Values.initMode }}
         - name: DOCKER_INFLUXDB_INIT_USERNAME
           valueFrom:
             secretKeyRef:
@@ -86,9 +86,9 @@ spec:
         - name: DOCKER_INFLUXDB_INIT_ORG
           value: {{ .Values.org | quote }}
         - name: DOCKER_INFLUXDB_INIT_BUCKET
-          value: {{ .Values.bucket | quote }}
+          value: {{ .Values.bucket }}
         - name: DOCKER_INFLUXDB_INIT_RETENTION
-          value: {{ .Values.retention | quote }}
+          value: {{ .Values.retention }}
         volumeMounts:
         - name: var-lib-influxdb2-vol
           mountPath: "/var/lib/influxdb2"
