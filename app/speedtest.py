@@ -31,6 +31,6 @@ speed_data = [
 
 # https://influxdb-python.readthedocs.io/en/latest/api-documentation.html
 #  host, port, username, password, and database name.
-client = InfluxDBClient('localhost', 8086, 'speedmonitor', 'pimylifeup', 'internetspeed')
-
+# TODO: Get the config values from environment variables
+client = InfluxDBClient('localhost', 8086, 'myuser', 'mypassword', 'internetspeed')
 client.write_points(speed_data)

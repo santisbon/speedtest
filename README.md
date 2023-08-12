@@ -1,15 +1,15 @@
 # speedtest
 
 A Helm chart with:
-
-* A Headless Service to expose the database to the client in the cluster.
-* A Headless Service to expose the dashboard to the whole network.
-* A Deployment for the InfluxDB pod.
-  * An InfluxDB server with the official Docker image to store the time series data. 
-* A Deployment for the Grafana pod.
-  * A Grafana server with the official Docker image for visualization of the stored data.
-* A CronJob to repeat the speed test on a schedule.
-  * Pod with a Python stateless app that talks to the Ookla speedtest API and the time series db.
+* InfluxDB time series database
+  * Headless Service to expose the database to the client in the cluster.
+  * Pod and Deployment with InfluxDB server.
+* Grafana dashboard
+  * Headless Service to expose the dashboard to the whole network.
+  * Pod and Deployment with Grafana server.
+* Client app
+  * Pod and Deployment with a Python stateless app that talks to the Ookla speedtest API and the time series db.
+  * A CronJob to repeat the speed test on a schedule.
 
 ## Prerequisites
 1. [Set up](https://santisbon.github.io/reference/rpi/) your Raspberry Pi with a static IP.

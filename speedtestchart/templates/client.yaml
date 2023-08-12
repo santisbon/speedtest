@@ -1,25 +1,27 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: {{ .Release.Name }}-influxdb-deploy
+  name: {{ .Release.Name }}-client-deploy
 spec:
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
       app: speedtest
-      tier: db
+      tier: client
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
         app: speedtest
-        tier: db
+        tier: client
     spec:
       containers:
-      - name: speedtest-c
+      - name: client-c
         image: santisbon/speedtest:latest
         imagePullPolicy: Always
         env:
         - name: TZ
           value: "America/Chicago"
+
+# TODO: Set env variables from Secrets for influxdb credentials
