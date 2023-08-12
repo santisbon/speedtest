@@ -55,6 +55,7 @@ Note: MicroK8s by default uses `Dqlite` as its storage backend instead of `etcd`
     ```
 4. Grab the `NodePort` assigned to the Grafana service (by default in the 30000-32767 range)
     ```shell
+    # On your Pi
     kubectl -n $NAMESPACE get svc $RELEASE-grafana-svc
     ```
 5. From your desktop, access the Grafana dashboard using your Raspberry Pi's IP address or DNS name and the `NodePort` from the previous step e.g. 
