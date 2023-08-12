@@ -1,36 +1,88 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ .Release.Name }}-influxdb-svc
+spec:
+  clusterIP: None
+  selector:
+    app: speedtest
+    tier: db
+  ports:
+  - port: 8086
+  
+---
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Release.Name }}-var-lib-influxdb2-pvc
+spec:
+  storageClassName: {{ .Release.Name }}-local-sc
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  selector:
+    matchLabels:
+      directory: var-lib-influxdb2
+
+---
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Release.Name }}-etc-influxdb2-pvc
+spec:
+  storageClassName: {{ .Release.Name }}-local-sc
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Mi
+  selector:
+    matchLabels:
+      directory: etc-influxdb2
+
+---
+
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: {{ .Release.Name }}-speedtest-deploy
+  name: {{ .Release.Name }}-influxdb-deploy
 spec:
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
       app: speedtest
+      tier: db
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
         app: speedtest
+        tier: db
     spec:
       containers:
-      - name: speedtest-c
-        image: santisbon/speedtest:latest
-        imagePullPolicy: Always
-        env:
-        - name: TZ
-          value: "America/Chicago"
       - name: influxdb-c
         image: influxdb
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         env:
         - name: TZ
           value: "America/Chicago"
         - name: DOCKER_INFLUXDB_INIT_MODE
           value: {{ .Values.initMode | quote }}
         - name: DOCKER_INFLUXDB_INIT_USERNAME
-          value: {{ .Values.user | quote }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secure-config
+              key: influxdb.username
         - name: DOCKER_INFLUXDB_INIT_PASSWORD
-          value: {{ .Values.password | quote }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secure-config
+              key: influxdb.password
         - name: DOCKER_INFLUXDB_INIT_ORG
           value: {{ .Values.org | quote }}
         - name: DOCKER_INFLUXDB_INIT_BUCKET

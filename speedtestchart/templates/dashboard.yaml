@@ -1,0 +1,63 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ .Release.Name }}-grafana-svc
+spec:
+  clusterIP: None
+  selector:
+    app: speedtest
+    tier: dashboard
+  ports:
+    - port: 3000
+
+---
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Release.Name }}-var-lib-grafana-pvc
+spec:
+  storageClassName: {{ .Release.Name }}-local-sc
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  selector:
+    matchLabels:
+      directory: var-lib-grafana
+
+---
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: {{ .Release.Name }}-grafana-deploy
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: speedtest
+      tier: dashboard
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: speedtest
+        tier: dashboard
+    spec:
+      containers:
+      - name: grafana-c
+        image: grafana/grafana:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: TZ
+          value: "America/Chicago"
+        volumeMounts:
+        - name: var-lib-grafana-vol
+          mountPath: "/var/lib/grafana"
+      volumes:
+      - name: var-lib-grafana-vol
+        persistentVolumeClaim:
+          claimName: {{ .Release.Name }}-var-lib-grafana-pvc

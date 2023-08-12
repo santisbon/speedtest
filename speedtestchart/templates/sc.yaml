@@ -1,0 +1,10 @@
+# https://kubernetes.io/docs/concepts/storage/storage-classes/#local
+# Local volumes do not currently support dynamic provisioning, however a StorageClass should still be created 
+# to delay volume binding until Pod scheduling. This is specified by the WaitForFirstConsumer volume binding mode.
+
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: {{ .Release.Name }}-local-sc
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer

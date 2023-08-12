@@ -1,0 +1,25 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: {{ .Release.Name }}-influxdb-deploy
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: speedtest
+      tier: db
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: speedtest
+        tier: db
+    spec:
+      containers:
+      - name: speedtest-c
+        image: santisbon/speedtest:latest
+        imagePullPolicy: Always
+        env:
+        - name: TZ
+          value: "America/Chicago"

@@ -1,3 +1,7 @@
+# https://kubernetes.io/docs/concepts/storage/persistent-volumes/
+# You need to explicitly set node affinity for local volumes.
+# Pods that use a PV will only be scheduled to nodes that are selected by the node affinity. 
+
 kind: PersistentVolume
 apiVersion: v1
 metadata:
@@ -47,3 +51,30 @@ spec:
           operator: In
           values:
           - {{ .Values.nodeHostname | quote }}
+
+---
+
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: {{ .Release.Name }}-var-lib-grafana-pv
+  labels:
+    directory: var-lib-grafana
+spec:
+  storageClassName: {{ .Release.Name }}-local-sc
+  persistentVolumeReclaimPolicy: Delete
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  local:
+    path: /var/lib/grafana
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - {{ .Values.nodeHostname | quote }}
+
