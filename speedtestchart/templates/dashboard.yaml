@@ -3,7 +3,7 @@ apiVersion: v1
 metadata:
   name: {{ .Release.Name }}-grafana-svc
 spec:
-  clusterIP: None
+  type: NodePort
   selector:
     app: speedtest
     tier: dashboard

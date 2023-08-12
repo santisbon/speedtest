@@ -1,6 +1,6 @@
 apiVersion: v2
 name: speedtest
-description: A Helm chart for installing speedtest on Kubernetes
+description: An internet speed monitor with accompanying dashboard.
 
 # A chart can be either an 'application' or a 'library' chart.
 #
