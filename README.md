@@ -11,7 +11,7 @@ A Helm chart with:
   * A Pod and CronJob to repeat the speed test on a schedule using the `speedtest` image from my Docker Hub repo.
 
 ## Prerequisites
-1. [Set up](https://santisbon.github.io/reference/rpi/) your Raspberry Pi with a static IP.
+1. [Set up](https://santisbon.github.io/reference/rpi/) your Raspberry Pi.
 2. [Install and configure MicroK8s](https://santisbon.github.io/reference/k8s/#microk8s) (or another lightweight Kubernetes distribution with DNS and Helm addons) on your Pi.
 
 Note: MicroK8s by default uses `Dqlite` as its storage backend instead of `etcd`. Further securing of `Secret` objects with [encryption at rest](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/) for either storage backend is outside the scope of this project.
@@ -57,7 +57,8 @@ Note: MicroK8s by default uses `Dqlite` as its storage backend instead of `etcd`
     ```shell
     kubectl -n $NAMESPACE get svc $RELEASE-grafana-svc
     ```
-5. From your desktop, access the Grafana dashboard using your Raspberry Pi's IP address and the `NodePort` from the previous step e.g. http://192.168.XXX.XXX:30001.
+5. From your desktop, access the Grafana dashboard using your Raspberry Pi's IP address or DNS name and the `NodePort` from the previous step e.g. 
+http://raspberrypi4.local:30001.
 
 ## Upgrade
 ```shell
