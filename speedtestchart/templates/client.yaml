@@ -3,7 +3,7 @@ apiVersion: batch/v1
 metadata:
   name: client-job
 spec:
-  schedule: "*/5 * * * *"
+  schedule: {{ .Values.schedule | quote }}
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:

@@ -3,6 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# draw.io diagram backup and temp files
+*.bkp
+*.dtmp
+
 # C extensions
 *.so
 

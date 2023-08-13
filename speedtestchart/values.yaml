@@ -8,3 +8,4 @@ influxdbtoken: my-super-secret-auth-token
 org: my-org
 bucket: internetspeed
 retention: 1w
+schedule: "*/10 * * * *"

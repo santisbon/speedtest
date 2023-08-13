@@ -1,14 +1,15 @@
 # Internet Speed Monitor
 
-A Helm chart with:
-* InfluxDB 2.x time series database
-  * Headless Service to expose the database to the client app in the cluster.
-  * Pod and Deployment with InfluxDB server using the Docker official image.
-* Grafana dashboard
-  * NodePort Service to expose the dashboard outside the cluster.
-  * Pod and Deployment with Grafana server using the Docker image from Grafana.
-* Client app
-  * A Pod and CronJob to repeat the speed test on a schedule using the `speedtest` image from my Docker Hub repo.
+Keep track of your internet connection speeds over time with a Raspberry Pi.
+
+![Screenshot](https://i.imgur.com/U5hOJzO.png)
+
+This Helm chart deploys:
+* InfluxDB 2.x database for time series data.
+* Grafana dashboard.
+* Python app to run the speed test on a schedule.
+
+![Diagram](https://i.imgur.com/mAugKgy.png)
 
 ## Prerequisites
 1. [Set up](https://santisbon.github.io/reference/rpi/) your Raspberry Pi.
@@ -41,7 +42,8 @@ Note: MicroK8s by default uses `Dqlite` as its storage backend instead of `etcd`
     nano $CHART/values.yaml
     # edit the values
     ```
-3. Install the Helm chart which will [enforce the installation order](https://helm.sh/docs/intro/using_helm). Set parameters if you didn't do it through the `values.yaml` file. If using MicroK8s add it to the typed commands e.g. `microk8s helm`, `microk8s kubectl`.
+3. Install the Helm chart which will [enforce the installation order](https://helm.sh/docs/intro/using_helm). Set parameters like the [schedule](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#schedule-syntax) to run the test if you didn't do it through the `values.yaml` file.  
+If using MicroK8s add it to the typed commands e.g. `microk8s helm`, `microk8s kubectl`.
     ```shell
     # On your Pi
     RELEASE=speedtest
@@ -52,7 +54,8 @@ Note: MicroK8s by default uses `Dqlite` as its storage backend instead of `etcd`
         --create-namespace \
         --set nodeHostname=raspberrypi4 \
         --set influxdbpassword=supersecret \
-        --set influxdbtoken=my-super-secret-auth-token
+        --set influxdbtoken=my-super-secret-auth-token \
+        --set schedule="*/10 * * * *"
     ```
 4. Grab the `NodePort` assigned to the Grafana service (by default in the 30000-32767 range). 
     ```shell
