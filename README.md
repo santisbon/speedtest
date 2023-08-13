@@ -63,7 +63,7 @@ Note: MicroK8s by default uses `Dqlite` as its storage backend instead of `etcd`
     ```
     In this example it's **32425**.
 5. From your desktop, access the Grafana dashboard using your Raspberry Pi's IP address or DNS name and the `NodePort` from the previous step e.g. 
-http://raspberrypi4.local:32425.
+http://raspberrypi4.local:32425. The default credentials are admin/admin.
 
 ## Upgrade
 ```shell

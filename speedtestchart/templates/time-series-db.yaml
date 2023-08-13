@@ -100,5 +100,5 @@ spec:
           claimName: {{ .Release.Name }}-var-lib-influxdb2-pvc
       - name: etc-influxdb2-vol
         persistentVolumeClaim:
-          claimName: {{ .Release.Name }}--etc-influxdb2-pvc
+          claimName: {{ .Release.Name }}-etc-influxdb2-pvc
       
