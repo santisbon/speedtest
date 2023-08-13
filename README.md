@@ -2,14 +2,16 @@
 
 Keep track of your internet connection speeds over time with a Raspberry Pi.
 
-![Screenshot](https://i.imgur.com/U5hOJzO.png)
+![Dashboard](https://i.imgur.com/xjp8tSg.png)
 
 This Helm chart deploys:
 * InfluxDB 2.x database for time series data.
 * Grafana dashboard.
 * Python app to run the speed test on a schedule.
 
-![Diagram](https://i.imgur.com/mAugKgy.png)
+<p align="center">
+    <img src="https://i.imgur.com/XDhiA4K.png"  width="70%">
+</p>
 
 ## Prerequisites
 1. [Set up](https://santisbon.github.io/reference/rpi/) your Raspberry Pi.
@@ -72,10 +74,10 @@ http://raspberrypi4.local:32425. The default credentials are *admin/admin*.
     1. Set query language to Flux.
     2. Set the URL using your Helm release name and InfluxDB port e.g. 
     http://speedtest-influxdb-svc:8086. 
-    3. Use the organization, token, and bucket you set in `values.yaml` or the command line. If you didn't set a token, one was created for you. You can retrieve it from a shell in the `influxdb-c` container with `influx auth list`.
+    3. Use the organization, token, and bucket you set in `values.yaml` or the command line. If you didn't set a token, one was created for you. You can retrieve it from a shell in the `influxdb-c` container with the command `influx auth list`.
     4. Click on *Save & Test*.
-    5. Build a dashboard, add visualization (panel), select the data source you created.
-    6. Write the Flux queries you want for your visualizations using `_measurement` or `_field`. Some examples:
+    5. Build a dashboard and add a visualization (panel) with the data source you created.
+    6. Write the Flux queries you want for your visualizations filtering by `_measurement` or `_field`. Some examples:
         ```
         speeds = from(bucket: "internetspeed")
             |> range(start: -1d)
