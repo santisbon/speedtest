@@ -4,6 +4,7 @@ initMode: setup
 influxdbport: 8086
 influxdbuser: influxuser
 influxdbpassword: supersecret
+influxdbtoken: my-super-secret-auth-token
 org: my-org
 bucket: internetspeed
 retention: 1w

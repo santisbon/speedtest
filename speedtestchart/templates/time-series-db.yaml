@@ -66,7 +66,7 @@ spec:
     spec:
       containers:
       - name: influxdb-c
-        image: influxdb
+        image: influxdb:2.7
         imagePullPolicy: IfNotPresent
         env:
         - name: TZ
@@ -83,6 +83,11 @@ spec:
             secretKeyRef:
               name: {{ .Release.Name }}-secure-config
               key: influxdb.password
+        - name: DOCKER_INFLUXDB_INIT_ADMIN_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secure-config
+              key: influxdb.token
         - name: DOCKER_INFLUXDB_INIT_ORG
           value: {{ .Values.org | quote }}
         - name: DOCKER_INFLUXDB_INIT_BUCKET

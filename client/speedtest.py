@@ -5,6 +5,7 @@ import logging
 from influxdb_client import InfluxDBClient, Point
 from influxdb_client.client.write_api import SYNCHRONOUS
 
+# DEBUG | INFO | WARNING | ERROR | CRITICAL
 logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s', level=logging.INFO)
 
 logging.info('Calling speedtest.net API...')
@@ -36,7 +37,7 @@ upload = upload.group(1)
 jitter = jitter.group(1)
 
 url = "http://" + os.getenv('TIME_SERIES_HOST') + ":" + os.getenv('TIME_SERIES_PORT')
-logging.info("Database host: " + url)
+logging.debug("Database host: " + url)
 
 # The backend DNS name comes from the `name` field in the backend service `.yaml` file
 with InfluxDBClient(url=url, 

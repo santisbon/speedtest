@@ -1,7 +1,7 @@
 # Internet Speed Monitor
 
 A Helm chart with:
-* InfluxDB time series database
+* InfluxDB 2.x time series database
   * Headless Service to expose the database to the client app in the cluster.
   * Pod and Deployment with InfluxDB server using the Docker official image.
 * Grafana dashboard
@@ -25,7 +25,7 @@ Note: MicroK8s by default uses `Dqlite` as its storage backend instead of `etcd`
     sudo mkdir -p /etc/influxdb2
     sudo mkdir -p /var/lib/grafana
     ```
-2. If installing from the repository:
+2. If installing from the repository
     ```shell
     # On your Pi
     helm repo add santisbon https://santisbon.github.io/charts/
@@ -51,7 +51,8 @@ Note: MicroK8s by default uses `Dqlite` as its storage backend instead of `etcd`
         -n $NAMESPACE \
         --create-namespace \
         --set nodeHostname=raspberrypi4 \
-        --set influxdbpassword=supersecret
+        --set influxdbpassword=supersecret \
+        --set influxdbtoken=my-super-secret-auth-token
     ```
 4. Grab the `NodePort` assigned to the Grafana service (by default in the 30000-32767 range). 
     ```shell
@@ -63,7 +64,27 @@ Note: MicroK8s by default uses `Dqlite` as its storage backend instead of `etcd`
     ```
     In this example it's **32425**.
 5. From your desktop, access the Grafana dashboard using your Raspberry Pi's IP address or DNS name and the `NodePort` from the previous step e.g. 
-http://raspberrypi4.local:32425. The default credentials are admin/admin.
+http://raspberrypi4.local:32425. The default credentials are *admin/admin*.
+6. Add a new connection with data source InfluxDB.
+    1. Set query language to Flux.
+    2. Set the URL using your Helm release name and InfluxDB port e.g. 
+    http://speedtest-influxdb-svc:8086. 
+    3. Use the organization, token, and bucket you set in `values.yaml` or the command line. If you didn't set a token, one was created for you. You can retrieve it from a shell in the `influxdb-c` container with `influx auth list`.
+    4. Click on *Save & Test*.
+    5. Build a dashboard, add visualization (panel), select the data source you created.
+    6. Write the Flux queries you want for your visualizations using `_measurement` or `_field`. Some examples:
+        ```
+        speeds = from(bucket: "internetspeed")
+            |> range(start: -1d)
+            |> filter(fn: (r) => r._field == "download" or r._field == "upload")
+            |> yield(name: "_results")
+
+        latency = from(bucket: "internetspeed")
+            |> range(start: -1d)
+            |> filter(fn: (r) => r._field == "ping" or r._field == "jitter")
+            |> yield(name: "_results")
+        ```
+    7. Save your dashboard. You can add multiple panels and set units like megabits per second (Mbps) and ms. The units are in the *Standard options* section of the panel.
 
 ## Upgrade
 ```shell
