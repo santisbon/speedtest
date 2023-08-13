@@ -2,7 +2,8 @@ import re
 import os
 import subprocess
 import logging
-from influxdb import InfluxDBClient
+from influxdb_client import InfluxDBClient, Point
+from influxdb_client.client.write_api import SYNCHRONOUS
 
 logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s', level=logging.INFO)
 
@@ -34,29 +35,17 @@ download = download.group(1)
 upload = upload.group(1)
 jitter = jitter.group(1)
 
-speed_data = [
-    {
-        "measurement" : "internet_speed",
-        "tags" : {
-            "host": "RaspberryPi"
-        },
-        "fields" : {
-            "download": float(download),
-            "upload": float(upload),
-            "ping": float(ping),
-            "jitter": float(jitter)
-        }
-    }
-]
-
-# https://influxdb-python.readthedocs.io/en/latest/api-documentation.html
 # The backend DNS name comes from the `name` field in the backend service `.yaml` file
 
-client = InfluxDBClient(os.getenv('TIME_SERIES_HOST'), 
-                        os.getenv('TIME_SERIES_PORT'),
-                        os.getenv('TIME_SERIES_USERNAME'), 
-                        os.getenv('TIME_SERIES_PASSWORD'), 
-                        os.getenv('TIME_SERIES_DATABASE'))
+client = InfluxDBClient(url=os.getenv('TIME_SERIES_HOST'), 
+                        username=os.getenv('TIME_SERIES_USERNAME'),
+                        password=os.getenv('TIME_SERIES_PASSWORD'))
+write_api = client.write_api(write_options=SYNCHRONOUS)
+
+p1 = Point("internet_speed").tag("host", "RaspberryPi").field("download", float(download))
+p2 = Point("internet_speed").tag("host", "RaspberryPi").field("upload", float(upload))
+p3 = Point("internet_speed").tag("host", "RaspberryPi").field("ping", float(ping))
+p4 = Point("internet_speed").tag("host", "RaspberryPi").field("jitter", float(jitter))
 
 logging.info('Writing speed data to time series database.')
-client.write_points(speed_data)
+write_api.write(bucket=os.getenv('TIME_SERIES_DATABASE'), record=[p1, p2, p3, p4])
