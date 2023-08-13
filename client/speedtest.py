@@ -35,8 +35,11 @@ download = download.group(1)
 upload = upload.group(1)
 jitter = jitter.group(1)
 
+url = "http://" + os.getenv('TIME_SERIES_HOST') + ":" + os.getenv('TIME_SERIES_PORT')
+logging.info("Database host: " + url)
+
 # The backend DNS name comes from the `name` field in the backend service `.yaml` file
-with InfluxDBClient(url=os.getenv('TIME_SERIES_HOST')+":"+os.getenv('TIME_SERIES_PORT'), 
+with InfluxDBClient(url=url, 
                     username=os.getenv('TIME_SERIES_USERNAME'),
                     password=os.getenv('TIME_SERIES_PASSWORD'),
                     org=os.getenv('TIME_SERIES_ORG')) as client:
