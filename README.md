@@ -31,7 +31,11 @@ Note: MicroK8s by default uses `Dqlite` as its storage backend instead of `etcd`
 2. If installing from the repository
     ```shell
     # On your Pi
+    
     helm repo add santisbon https://santisbon.github.io/charts/
+    # or 
+    helm repo update
+    
     CHART="santisbon/speedtest"
     ```
 
