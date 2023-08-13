@@ -32,4 +32,6 @@ spec:
                   key: influxdb.password
             - name: TIME_SERIES_DATABASE
               value: {{ .Values.bucket }}
+            - name: TIME_SERIES_ORG
+              value: {{ .Values.org | quote }}
           restartPolicy: OnFailure

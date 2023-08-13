@@ -48,4 +48,6 @@ p3 = Point("internet_speed").tag("host", "RaspberryPi").field("ping", float(ping
 p4 = Point("internet_speed").tag("host", "RaspberryPi").field("jitter", float(jitter))
 
 logging.info('Writing speed data to time series database.')
-write_api.write(bucket=os.getenv('TIME_SERIES_DATABASE'), record=[p1, p2, p3, p4])
+write_api.write(bucket=os.getenv('TIME_SERIES_DATABASE'), 
+                org=os.getenv('TIME_SERIES_ORG'),
+                record=[p1, p2, p3, p4])
