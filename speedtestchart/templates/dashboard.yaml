@@ -47,6 +47,10 @@ spec:
         app: speedtest
         tier: dashboard
     spec:
+      securityContext:
+        fsGroup: 472
+        supplementalGroups:
+        - 0
       containers:
       - name: grafana-c
         image: grafana/grafana:latest

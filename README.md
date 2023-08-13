@@ -37,7 +37,7 @@ Note: MicroK8s by default uses `Dqlite` as its storage backend instead of `etcd`
     # On your Pi
     git clone https://github.com/santisbon/speedtest.git && cd speedtest
     CHART="./speedtestchart"
-    
+
     nano $CHART/values.yaml
     # edit the values
     ```
@@ -53,13 +53,17 @@ Note: MicroK8s by default uses `Dqlite` as its storage backend instead of `etcd`
         --set nodeHostname=raspberrypi4 \
         --set influxdbpassword=supersecret
     ```
-4. Grab the `NodePort` assigned to the Grafana service (by default in the 30000-32767 range)
+4. Grab the `NodePort` assigned to the Grafana service (by default in the 30000-32767 range). 
     ```shell
     # On your Pi
     kubectl -n $NAMESPACE get svc $RELEASE-grafana-svc
+
+    NAME                    TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+    speedtest-grafana-svc   NodePort   10.152.182.171   <none>        3000:32425/TCP   52s
     ```
+    In this example it's **32425**.
 5. From your desktop, access the Grafana dashboard using your Raspberry Pi's IP address or DNS name and the `NodePort` from the previous step e.g. 
-http://raspberrypi4.local:30001.
+http://raspberrypi4.local:32425.
 
 ## Upgrade
 ```shell
