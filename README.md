@@ -10,7 +10,7 @@ This Helm chart deploys:
 * Python app to run the speed test on a schedule.
 
 <p align="center">
-    <img src="https://i.imgur.com/XDhiA4K.png"  width="80%">
+    <img src="https://i.imgur.com/1SqCDuZ.png"  width="80%">
 </p>
 
 ## Prerequisites
